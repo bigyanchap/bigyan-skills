@@ -1,0 +1,17 @@
+skill: build_android_launcher
+
+goal:
+Create an intent-driven Android launcher.
+
+inputs:
+  - project_directory
+
+steps:
+  - create_launcher_activity
+  - implement_ui_prompt
+  - implement_command_input
+  - build_intent_parser
+  - connect_android_intents
+
+outputs:
+  - working_launcher

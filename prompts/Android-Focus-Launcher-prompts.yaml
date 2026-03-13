@@ -1,0 +1,295 @@
+prompts:
+  - id: 1
+    title: Create Launcher Activity
+    content: |
+      Create a LauncherActivity in a Kotlin Android project.
+
+      Requirements:
+      - Package: com.focusos.launcher
+      - Activity name: LauncherActivity
+      - This activity will become the default HOME launcher.
+
+      Update AndroidManifest.xml so the activity handles:
+
+      Intent:
+      ACTION_MAIN
+      CATEGORY_HOME
+      CATEGORY_DEFAULT
+
+      When the user presses the home button, LauncherActivity should open.
+    test: |
+      * Install app
+      * Press Home
+      * Focus launcher appears
+
+  - id: 2
+    title: Create Minimal UI
+    content: |
+      Modify LauncherActivity to show a minimal launcher UI.
+
+      Center of the screen should display:
+
+      "What do you want to do?"
+
+      Below it add two buttons:
+
+      Speak
+      Type
+
+      Layout should be vertically centered.
+
+      Use Jetpack Compose.
+    test: Launcher shows the prompt + two buttons.
+
+  - id: 3
+    title: Implement Text Command Dialog
+    content: |
+      Add functionality to the "Type" button.
+
+      When pressed:
+      - open a text input dialog
+      - allow user to enter a command
+
+      Example commands:
+      open youtube
+      call mom
+      search weather
+
+      Display the entered command on screen.
+    test: Typing shows command.
+
+  - id: 4
+    title: Create CommandProcessor Module
+    content: |
+      Create a Kotlin class called CommandProcessor.
+
+      File:
+      CommandProcessor.kt
+
+      Function:
+
+      processCommand(command: String)
+
+      This function will later connect parsing and execution.
+
+      For now it should only log the command using Logcat.
+    test: Logcat shows command.
+
+  - id: 5
+    title: Implement Intent Parser
+    content: |
+      Create IntentParser.kt.
+
+      Input:
+      String command
+
+      Output:
+      ParsedIntent data class.
+
+      Define enum IntentType:
+
+      OPEN_APP
+      CALL_CONTACT
+      WEB_SEARCH
+      UNKNOWN
+
+      Implement rules:
+
+      if command starts with "open"
+      → OPEN_APP
+
+      if command starts with "call"
+      → CALL_CONTACT
+
+      if command starts with "search"
+      → WEB_SEARCH
+    test: Parser returns correct intent.
+
+  - id: 6
+    title: Define ParsedIntent Model
+    content: |
+      Create a Kotlin data class ParsedIntent.
+
+      Fields:
+
+      type: IntentType
+      argument: String?
+
+      Examples:
+
+      ParsedIntent(OPEN_APP, "youtube")
+      ParsedIntent(CALL_CONTACT, "mom")
+      ParsedIntent(WEB_SEARCH, "weather")
+    test: Parser returns structured object.
+
+  - id: 7
+    title: Implement Intent Executor
+    content: |
+      Create IntentExecutor.kt.
+
+      Function:
+
+      executeIntent(context, parsedIntent)
+
+      Implement:
+
+      OPEN_APP
+      Use PackageManager to find and launch the app.
+
+      WEB_SEARCH
+      Use Intent.ACTION_WEB_SEARCH
+
+      CALL_CONTACT
+      Use Intent.ACTION_DIAL
+    test: |
+      open youtube
+      search weather
+      → Apps should launch.
+
+  - id: 8
+    title: Connect Full Text Pipeline
+    content: |
+      Connect the full pipeline inside LauncherActivity.
+
+      Flow:
+
+      User types command
+      ↓
+      CommandProcessor
+      ↓
+      IntentParser
+      ↓
+      IntentExecutor
+
+      Example:
+
+      open youtube
+
+      Result:
+      YouTube opens.
+    test: ""
+
+  - id: 9
+    title: Add Microphone Button Handler
+    content: |
+      Add functionality to the Speak button.
+
+      When pressed:
+
+      Start recording audio using MediaRecorder.
+
+      Save recording to:
+
+      /cache/voice_command.wav
+    test: Audio file created.
+
+  - id: 10
+    title: Create Audio Recorder Helper
+    content: |
+      Create AudioRecorder.kt.
+
+      Functions:
+
+      startRecording()
+      stopRecording()
+
+      Use MediaRecorder to record microphone input.
+
+      Save output file:
+
+      voice_command.wav
+    test: Recording works.
+
+  - id: 11
+    title: Integrate Whisper.cpp
+    content: |
+      Integrate Whisper.cpp using Android NDK.
+
+      Use model:
+
+      tiny.en
+
+      Input:
+      voice_command.wav
+
+      Output:
+      transcribed text.
+
+      Create class:
+
+      WhisperTranscriber.kt
+
+      Function:
+
+      transcribe(audioFile) -> String
+    test: Speech converts to text.
+
+  - id: 12
+    title: Connect Voice Pipeline
+    content: |
+      Connect voice input to command pipeline.
+
+      Flow:
+
+      Speak button
+      ↓
+      Record audio
+      ↓
+      WhisperTranscriber
+      ↓
+      IntentParser
+      ↓
+      IntentExecutor
+
+      Example:
+      Speak: open youtube
+      Result: YouTube launches.
+    test: ""
+
+  - id: 13
+    title: Add Command Feedback
+    content: |
+      Add UI feedback showing:
+      Recognized command
+      Example:
+      You said: "open youtube"
+      Display it under the main prompt.
+    test: ""
+
+  - id: 14
+    title: Add Loading Indicator
+    content: |
+      Show loading indicator while:
+      speech recognition is running.
+      Hide it when transcription finishes.
+    test: ""
+
+  - id: 15
+    title: Improve Parser Robustness
+    content: |
+      Improve the rule-based parser.
+      Make parsing case-insensitive.
+      Support phrases like:
+      please open youtube
+       can you open youtube
+       open the youtube app
+    test: ""
+
+summary:
+  name: FocusOS prototype
+  flow: |
+    Unlock phone
+     ↓
+     Focus Launcher
+     ↓
+     "What do you want to do?"
+     ↓
+     Speak or Type
+     ↓
+     STT
+     ↓
+     Rule Parser
+     ↓
+     Android Intent
+     ↓
+     App launches
